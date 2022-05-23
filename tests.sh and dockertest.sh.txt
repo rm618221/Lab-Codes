@@ -1,0 +1,62 @@
+
+
+
+
+#!/bin/bash
+imagename="sample-image2"
+
+i=1
+
+docker run -it -v ~/newlogs2:/linking  --name=myubuntu_68 sample-image2 /linking/dockerlisttest
+
+array=("cfdpv1" "linking" "status-rpts" "nm-unit" "ltp-sda" "ltp-purge" "ltp-retransmission" "ltp-green" "nm-unit/utils/rhht" "nm-unit/utils/vector" "bench-stcp" "bpchat" "bping" "bssp" "bpstats2" "cfdpv1" "ipnd" "cfdpv1-tcp" "cgr-test" "stewardship" "1001.sysctl-script" "1003.loopback-sdr" "1010.pingpong-ct" "aysymmetric-range" "bpsec/bpsec-all-multinode-test" "bpsec/bpsec-bcb-multinode-test" "bpsec/bpsec-bib-multinode-test" "bpsec/bpsec-policy-test" "bug-0001-cgr-loopback" "bug-0002-cgr-recompute" "bug-0007-ionadmin-duplicate-contacts" "bug-0008-limbo-bpclock-use-after-free" "bug-0009-tcpclo-fixes" "bug-0015-tcpclo-bpcp-sig-handling" "cfdpv1-4node-ltp" "contact-volume/ltp-loopback" "contact-volume/udp-loopback" "ipn-null-eid" "issue-132-udplso-tx-rate-limit" "issue-188-common-cos-syntax" "issue-196-checkforcongestion-looping" "issue-234-235" "issue-236-src-eid-trunc" "issue-245-contactrangewildcard" "issue-253-tcpcl-keepalive" "issue-264-ltp-blksize" "issue-265-bpdriver-ttl-option" "issue-276-loopback-range")
+for testname in "${array[@]}"
+
+do
+
+  docker run -d -v ~/newlogs2:/${testname}  --name=myubuntu_$i sample-image2 /${testname}/dockertest2 ${testname} &
+  i=$((i + 1))
+done
+
+
+
+
+#!/bin/sh
+
+TEST=$1
+
+TS=$TEST/timestamp
+
+PERSIST=/${TEST}
+
+START=$(date +%s)
+
+START_TIME=$(date +"%D %T")
+
+touch $TS
+
+./runtests $TEST
+
+END=$(date +%s)
+
+EXITVAL=$?
+
+find $TEST -newer $TS | xargs tar cvf $PERSIST/${TEST}.tar
+
+echo $EXITVAL > $PERSIST/${TEST}.exitval
+
+DIFF=$(($END-$START))
+
+echo "It took $DIFF seconds">$PERSIST/${TEST}.duration
+
+echo "It stated at $START_TIME">$PERSIST/${TEST}.starttime
+
+yes 123456789 | head -1000000 > $PERSIST/${TEST}.dummy
+
+exit 0
+
+
+#!/bin/sh
+ find .  \( -type f -o -type l \) -a -name 'dotest' | grep -v "\.libs/" | xargs -L 1 dirname | cut -d / -f 1- | sort
+
+

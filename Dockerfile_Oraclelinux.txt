@@ -1,0 +1,67 @@
+FROM oraclelinux:8 AS image
+
+RUN yum -y update
+
+RUN yum -y install sudo
+
+RUN yum -y install wget
+
+RUN sudo yum update
+
+RUN sudo yum groupinstall "Development Tools" -y
+
+RUN wget https://sourceforge.net/projects/ion-dtn/files/ion-open-source-4.1.0.tar.gz/download
+
+RUN tar xvzf download
+
+WORKDIR /ion-open-source-4.1.0
+
+RUN ./configure
+
+RUN make
+
+RUN sudo ldconfig
+
+RUN rm killm
+
+RUN ln -s /bin/true killm
+
+WORKDIR /ion-open-source-4.1.0/tests
+
+RUN printf "#!/bin/sh\n \
+ find .  \( -type f -o -type l \) -a -name 'dotest' | grep -v "\.libs/" | xargs -L 1 dirname | cut -d / -f 1- | sort\n">dockerlisttest.sh
+
+RUN printf "#!/bin/sh\n \
+
+TEST=\$1\n\
+
+TS=\$TEST/timestamp\n \
+
+PERSIST=/\${TEST}\n \
+
+touch \$TS\n \
+
+START_TIME=\$(date)\n \
+
+START=\$(date +%%s)\n \
+
+./runtests \$TEST 2>&1| tee \$PERSIST/\${TEST}.log \n \
+
+END=\$(date +%%s)\n \
+
+EXITVAL=\$?\n \
+
+DIFF=\$((\$END-\$START))\n \
+
+find \$TEST -newer \$TS | xargs tar cvf \$PERSIST/\${TEST}.tar\n \
+
+echo \$EXITVAL > \$PERSIST/\${TEST}.exitval\n \
+
+echo \"It took \$DIFF seconds\">\$PERSIST/\${TEST}.duration\n \
+
+echo \"It stated at \$START_TIME\">\$PERSIST/\${TEST}.starttime\n \
+
+exit 0\n">dockertest.sh
+
+
+

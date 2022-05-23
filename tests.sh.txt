@@ -1,0 +1,12 @@
+#!/bin/bash
+imagename="sample-image2"
+i=1
+
+array=("1001.sysctl-script" "1001.loopback-sdr" "1001.pingpong-ct" "asymetric-range" "bench-stcp" "bpchat" "bping" "bpsec/bpsec-all-multinode-test" "bpsec/bpsec-bcb-multinode-test" "bpsec/bpsec-bib-multinode-test" "bpsec/bpsec-policy-test" "bpstats2" "bssp" "bug-0001-cgr-loopback" "bug-0002-cgr-recompute" "bug-0007-ionadmin-duplicate-contacts" "bug-0008-limbo-bpclock-use-after-free" "bug-0009-tcpclo-fixes" "bug-0015-tcpclo-bpcp-sig-handling" "cfdpv1" "linking" "status-rpts" "nm-unit" "ltp-sda" "ltp-purge" "ltp-retransmission" "ltp-green" "nm-unit/utils/rhht" "nm-unit/utils/vector" "cfdpv1" "cfdpv1-4node-ltp" "cfdpv1-tcp" "cgr-test" "contact-volume/ltp-loopback" "contact-volume/udp-loopback" "ipnd" "ipn-null-eid" "issue-132-udplso-tx-rate-limit" "issue-188-common-cos-syntax" "issue-196-checkforcongestion-looping" "issue-234-235" "issue-236-src-eid-trunc" "issue-245-contactrangewildcard" "issue-253-tcpcl-keepalive" "issue-264-ltp-blksize" "issue-265-bpdriver-ttl-option" "issue-276-loopback-range" "issue-279-bpMemo-timeline" ""issue-285-286-segfaults" "issue-302-fast-structures" "issue-303-green-sessions" "issue-306-congestion-forecasting" "issue-313-overlapping-memcpy" "issue-319-parseSocketSpec" "issue-323-congestion-forecasting-overlapping" "issue-324-ltp-files" "issue-325-329-critical" "issue-325-329-fragmentation" "issue-334-cfdp-transaction-id" "issue-344-bpsource-ttl" "issue-347-tcpcl-reconnection" "issue-352-bpcp" "issue-358-cfdp-inactivity" "issue-364-dtpc" "limbo" )
+for testname in "${array[@]}"
+
+do
+
+  docker run -d -v ~/newlogs2:/${testname}  --name=myubuntu_$i sample-image2 /${testname}/dockertest2 ${testname} &
+  i=$((i + 1))
+done

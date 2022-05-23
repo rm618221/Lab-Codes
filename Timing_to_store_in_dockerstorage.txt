@@ -1,0 +1,2 @@
+It took about 27 min to finish dockertests in named vol
+It took about 14 min to finish dockertests in windows location

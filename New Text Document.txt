@@ -1,0 +1,8 @@
+#!/bin/bash
+testname="limbo"
+containername=myubuntu$RANDOM
+imagename="new"
+docker run -itd --name=$containername $imagename bash
+docker exec --workdir /ion-3.6.2/tests $containername ./runtests $testname
+docker stop $containername
+exit

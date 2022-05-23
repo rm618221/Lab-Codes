@@ -1,0 +1,31 @@
+#!/bin/bash
+
+imagename="oraclelinux-sample"
+
+i=1
+
+array=( $(docker run -it -v /mnt/c/Users/rm618221/Desktop/docker_storage:/linking --name=newubuntu oraclelinux-sample /bin/bash dockerlisttest.sh linking| tr -d '\r') )
+
+arr=()
+
+idx=0
+
+for element in "${array[@]}"
+
+do
+
+  length=${#element}
+  testname=${element:2:$((length-1))}
+  arr[idx]=$testname
+  idx=$((idx + 1))
+done
+
+for testname in "${arr[@]}"
+
+do
+
+  docker run -d -v /mnt/c/Users/rm618221/Desktop/docker_storage:/${testname}  --name=myubuntu_$i oraclelinux-sample /bin/bash dockertest.sh ${testname} &
+
+  i=$((i + 1))
+
+done
